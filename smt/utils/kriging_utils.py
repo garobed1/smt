@@ -601,7 +601,7 @@ def abs_exp(theta, d, grad_ind=None, hess_ind=None, derivative_params=None):
     return r
 
 
-def squar_exp(theta, d, grad_ind=None, hess_ind=None, derivative_params=None):
+def squar_exp(theta, d, grad_ind=None, hess_ind=None, derivative_params=None, hess_params=None):
 
     """
     Squared exponential correlation model.
@@ -664,12 +664,26 @@ def squar_exp(theta, d, grad_ind=None, hess_ind=None, derivative_params=None):
                 * r[i * nb_limit : (i + 1) * nb_limit, 0]
             )
             i += 1
-    if derivative_params is not None:
+
+    if derivative_params is not None or hess_params is not None:
         dd = derivative_params["dd"]
         r = r.T
         dr = -np.einsum("i,ij->ij", r[0], dd)
+        
+        if hess_params is None:
+            return r.T, dr
 
-        return r.T, dr
+        dd = hess_params["dd"]
+        d2r = np.zeros([r.shape[0], n_components, n_components])
+        for k in range(r.shape[0]):
+            for i in range(n_components):
+                for j in range(n_components):
+                    if(i == j):
+                        d2r[k,i,j] = -(2*theta[i]-dd[k,i]*dd[k,i])*r[k]
+                    else:
+                        d2r[k,i,j] = dd[k,i]*dd[k,j]*r[k]
+
+        return d2r
 
     return r
 
@@ -829,7 +843,7 @@ def matern52(theta, d, grad_ind=None, hess_ind=None, derivative_params=None):
     return r
 
 
-def matern32(theta, d, grad_ind=None, hess_ind=None, derivative_params=None):
+def matern32(theta, d, grad_ind=None, hess_ind=None, derivative_params=None, hess_params=None):
     """
     Matern 3/2 correlation model.
 
@@ -929,7 +943,7 @@ def matern32(theta, d, grad_ind=None, hess_ind=None, derivative_params=None):
                     - fact_3 * M32[i * nb_limit : (i + 1) * nb_limit, 0]
                 )
             i += 1
-    if derivative_params is not None:
+    if derivative_params is not None or hess_params is not None:
         dx = derivative_params["dx"]
 
         abs_ = abs(dx)
@@ -960,7 +974,22 @@ def matern32(theta, d, grad_ind=None, hess_ind=None, derivative_params=None):
                 dr[j][k] = (
                     -np.sqrt(3) * theta[k] * der[j][k] * r[j] + A[j][0] * dB[j][k]
                 )
-        return r, dr
+        
+        if hess_params is None:
+            return r, dr
+
+        d2r = np.zeros([dx.shape[0], n_components, n_components])
+        for j in range(dx.shape[0]):
+            for i in range(n_components):
+                for k in range(n_components):
+                    if(i == k):
+                        d2r[j,i,k] = (np.sqrt(3) * theta[i] * der[j][i])*(1./(1+np.sqrt(3)*abs_[j][i]*theta[i]) - 1.)*dr[j][k] + \
+                            -(3 * theta[i] * theta[i])*(1./(1+np.sqrt(3)*abs_[j][i]*theta[i])**2)*r[j]
+                    else:
+                        d2r[j,i,k] = (np.sqrt(3) * theta[i] * der[j][i])*(1./(1+np.sqrt(3)*abs_[j][i]*theta[i]) - 1.)*dr[j][k] 
+
+        return d2r
+
 
     return r
 
