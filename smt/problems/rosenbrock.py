@@ -18,6 +18,18 @@ class Rosenbrock(Problem):
         self.xlimits[:, 0] = -2.0
         self.xlimits[:, 1] = 2.0
 
+        if(self.options["ndim"] == 2):
+            self.mean = 455.6666666666667
+            self.stdev = 606.5602418425782
+
+        if(self.options["ndim"] == 4):
+            self.mean = 1367.0418194476738
+            self.stdev = 1141.4087164117796
+
+        if(self.options["ndim"] == 8):
+            self.mean = 3189.825166315156
+            self.stdev = 1781.1374067903641
+
     def _evaluate(self, x, kx):
         """
         Arguments

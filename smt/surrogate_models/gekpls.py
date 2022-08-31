@@ -19,7 +19,7 @@ class GEKPLS(KPLS):
         declare(
             "corr",
             "squar_exp",
-            values=("abs_exp", "squar_exp"),
+            values=("abs_exp", "squar_exp", "matern32"),
             desc="Correlation function type",
             types=(str),
         )

@@ -19,6 +19,14 @@ class LpNorm(Problem):
         self.xlimits[:, 0] = -1.0
         self.xlimits[:, 1] = 1.0
 
+        if(self.options["ndim"] == 1):
+            self.mean = 0.5
+            self.stdev = 0.288675134594807
+
+        if(self.options["ndim"] == 6):
+            self.mean = 1.3885818847988751
+            self.stdev = 0.268030500518847
+
     def _evaluate(self, x, kx):
         """
         Arguments

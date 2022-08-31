@@ -24,6 +24,11 @@ class TensorProduct(Problem):
         if self.options["func"] == "cos":
             self.func = lambda v: np.cos(a * np.pi * v)
             self.dfunc = lambda v: -a * np.pi * np.sin(a * np.pi * v)
+
+            if(self.options["ndim"] == 1):
+                self.mean = 0
+                self.stdev = np.sqrt(2.)/2.
+
         elif self.options["func"] == "exp":
             self.func = lambda v: np.exp(a * v)
             self.dfunc = lambda v: a * np.exp(a * v)

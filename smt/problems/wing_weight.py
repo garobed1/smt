@@ -27,6 +27,9 @@ class WingWeight(Problem):
         self.xlimits[:, 0] = [150, 220, 6, -10, 16, 0.5, 0.08, 2.5, 1700, 0.025]
         self.xlimits[:, 1] = [200, 300, 10, 10, 45, 1, 0.18, 6, 2500, 0.08]
 
+        self.mean = 607.9151132873128
+        self.stdev = 130.9385220268431
+
     def _evaluate(self, x, kx):
         """
         Arguments
