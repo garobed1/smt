@@ -35,6 +35,12 @@ class GEKPLS(KPLS):
             types=int,
             desc="Number of extra points per training point",
         )
+        declare(
+            "zero_out_y",
+            False,
+            types=bool,
+            desc="Choose to ignore PLS fit",
+        )
         self.supports["training_derivatives"] = True
 
     def _check_param(self):
@@ -55,6 +61,7 @@ class GEKPLS(KPLS):
                 self.options["delta_x"],
                 self.options["xlimits"],
                 self.options["extra_points"],
+                self.options["zero_out_y"]
             )
             if self.options["extra_points"] != 0:
                 self.nt *= self.options["extra_points"] + 1

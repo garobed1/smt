@@ -1062,7 +1062,7 @@ def act_exp(theta, d, grad_ind=None, hess_ind=None, d_x=None, derivative_params=
     return r
 
 
-def ge_compute_pls(X, y, n_comp, pts, delta_x, xlimits, extra_points):
+def ge_compute_pls(X, y, n_comp, pts, delta_x, xlimits, extra_points, zeroy = False):
 
     """
     Gradient-enhanced PLS-coefficients.
@@ -1181,10 +1181,13 @@ def ge_compute_pls(X, y, n_comp, pts, delta_x, xlimits, extra_points):
 
         # As of sklearn 0.24.1 a zeroed _y raises an exception while sklearn 0.23 returns zeroed x_rotations
         # For now the try/except below is a workaround to restore the 0.23 behaviour
-        try:
-            _pls.fit(_X.copy(), _y.copy())
-            coeff_pls[i, :, :] = _pls.x_rotations_
-        except StopIteration:
+        if not zeroy:
+            try:
+                _pls.fit(_X.copy(), _y.copy())
+                coeff_pls[i, :, :] = _pls.x_rotations_
+            except StopIteration:
+                coeff_pls[i, :, :] = 0
+        else:
             coeff_pls[i, :, :] = 0
 
         # Add additional points
