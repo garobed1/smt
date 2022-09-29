@@ -1188,7 +1188,7 @@ def ge_compute_pls(X, y, n_comp, pts, delta_x, xlimits, extra_points, zeroy = Fa
             except StopIteration:
                 coeff_pls[i, :, :] = 0
         else:
-            coeff_pls[i, :, :] = 0
+            coeff_pls[i, :, :] = 1
 
         # Add additional points
         if extra_points != 0:
